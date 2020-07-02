@@ -56,7 +56,6 @@ namespace FBT_Saver
 
             if (_savedCalibrations.ContainsKey(__0))
             {
-                MelonModLogger.Log($"Applying saved calibration for {__0}");
                 var savedCalib = _savedCalibrations[__0];
                 __instance.hip = savedCalib.Hip;
                 __instance.leftFoot = savedCalib.LeftFoot;
@@ -84,8 +83,6 @@ namespace FBT_Saver
                 LeftFoot = __instance.leftFoot,
                 RightFoot = __instance.rightFoot
             }; // this doesn't seem to save the new calbration, but the old one. Why?
-
-            MelonModLogger.Log("PerformCalibration");
         }
     }
 }
