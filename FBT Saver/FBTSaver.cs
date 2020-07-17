@@ -33,7 +33,7 @@ namespace FBT_Saver
 
             MelonModLogger.Log("Patching IsCalibratedForAvatar...");
             harmonyInstance.Patch(
-                typeof(VRCTrackingSteam).GetMethod("Method_Public_Virtual_Boolean_String_0"),
+                typeof(VRCTrackingSteam).GetMethod("Method_Public_Virtual_Boolean_String_1"),
                 new HarmonyMethod(typeof(FbtSaver).GetMethod("IsCalibratedForAvatar", BindingFlags.Static | BindingFlags.NonPublic)),
                 null, null);
 
@@ -54,13 +54,15 @@ namespace FBT_Saver
                 return true;
             }
 
-            if (_savedCalibrations.ContainsKey(__0))
+            var avatarId = __0;
+
+            if (_savedCalibrations.ContainsKey(avatarId))
             {
-                var savedCalib = _savedCalibrations[__0];
+                var savedCalib = _savedCalibrations[avatarId];
                 __instance.hip = savedCalib.Hip;
                 __instance.leftFoot = savedCalib.LeftFoot;
                 __instance.rightFoot = savedCalib.RightFoot;
-                __instance.field_Private_String_0 = __0;
+                __instance.field_Private_String_0 = avatarId;
                 __result = true;
                 return false;
             }
@@ -82,7 +84,7 @@ namespace FBT_Saver
                 Hip = __instance.hip,
                 LeftFoot = __instance.leftFoot,
                 RightFoot = __instance.rightFoot
-            }; // this doesn't seem to save the new calbration, but the old one. Why?
+            };
         }
     }
 }
