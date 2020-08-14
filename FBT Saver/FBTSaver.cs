@@ -9,7 +9,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.0.2";
+        public const string Version = "1.0.3";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -21,7 +21,7 @@ namespace FBT_Saver
 
             MelonLogger.Log("Patching IsCalibratedForAvatar...");
             harmonyInstance.Patch(
-                typeof(VRCTrackingSteam).GetMethod("Method_Public_Virtual_Boolean_String_0"),
+                typeof(VRCTrackingSteam).GetMethod("Method_Public_Virtual_Boolean_String_2"),
                 new HarmonyMethod(typeof(FbtSaver).GetMethod(nameof(IsCalibratedForAvatar), BindingFlags.Static | BindingFlags.NonPublic)));
             MelonLogger.Log("Done!");
         }
