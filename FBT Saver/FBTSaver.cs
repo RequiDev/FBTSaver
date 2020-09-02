@@ -21,7 +21,7 @@ namespace FBT_Saver
 
             MelonLogger.Log("Patching IsCalibratedForAvatar...");
             harmonyInstance.Patch(
-                typeof(VRCTrackingSteam).GetMethod("Method_Public_Virtual_Boolean_String_0"),
+                typeof(VRCTrackingSteam).GetMethod(nameof(VRCTrackingSteam.Method_Public_Virtual_Boolean_String_4)),
                 new HarmonyMethod(typeof(FbtSaver).GetMethod(nameof(IsCalibratedForAvatar), BindingFlags.Static | BindingFlags.NonPublic)));
             MelonLogger.Log("Done!");
         }
