@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using Harmony;
 using MelonLoader;
 
@@ -9,7 +10,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.0.4";
+        public const string Version = "1.0.8";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -17,12 +18,19 @@ namespace FBT_Saver
     {
         public override void OnApplicationStart()
         {
-            var harmonyInstance = HarmonyInstance.Create("FBTSaver");
+            var instance = HarmonyInstance.Create("FBTSaver");
 
             MelonLogger.Log("Patching IsCalibratedForAvatar...");
-            harmonyInstance.Patch(
-                typeof(VRCTrackingSteam).GetMethod(nameof(VRCTrackingSteam.Method_Public_Virtual_Boolean_String_0)),
-                new HarmonyMethod(typeof(FbtSaver).GetMethod(nameof(IsCalibratedForAvatar), BindingFlags.Static | BindingFlags.NonPublic)));
+
+            // Yoinked from emm. Thanks <3
+            var methods = typeof(VRCTrackingSteam).GetMethods();
+            foreach (var methodInfo in methods)
+            {
+                if (methodInfo.GetParameters().Length == 1 && methodInfo.GetParameters().First().ParameterType == typeof(string) && methodInfo.ReturnType == typeof(bool) && methodInfo.GetRuntimeBaseDefinition() == methodInfo)
+                {
+                    instance.Patch(methodInfo, new HarmonyMethod(typeof(FbtSaver).GetMethod(nameof(IsCalibratedForAvatar), BindingFlags.Static | BindingFlags.NonPublic)));
+                }
+            }
             MelonLogger.Log("Done!");
         }
 
