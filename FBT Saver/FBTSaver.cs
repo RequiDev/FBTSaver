@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +15,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -85,10 +86,20 @@ namespace FBT_Saver
                 RightFoot = new KeyValuePair<Vector3, Quaternion>(__instance.rightFoot.localPosition, __instance.rightFoot.localRotation),
             };
 
-            File.WriteAllText($"{CalibrationsDirectory}{CalibrationsFile}", JsonConvert.SerializeObject(_savedCalibrations, Formatting.Indented, new JsonSerializerSettings
+
+            try
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            }));
+                File.WriteAllText($"{CalibrationsDirectory}{CalibrationsFile}", JsonConvert.SerializeObject(_savedCalibrations, Formatting.Indented, new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }));
+            }
+            catch(Exception e)
+            {
+                File.WriteAllText($"{CalibrationsDirectory}error.log", e.Message);
+                MelonLogger.LogError(
+                    $"Could not save current calibration to file! Created error.log in /UserData/FTBSaver. Please create an issue on GitHub or message Requi in the VRChat Modding Group Discord with that file.");
+            }
         }
 
         private static bool IsCalibratedForAvatar(ref VRCTrackingSteam __instance, ref bool __result, string __0)
