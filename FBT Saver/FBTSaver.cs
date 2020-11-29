@@ -16,7 +16,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.2";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -75,14 +75,17 @@ namespace FBT_Saver
                 }
             }
 
-            MelonLogger.Log("Adding UIX Button...");
-            ExpansionKitApi.RegisterSimpleMenuButton(ExpandedMenu.AvatarMenu, "Clear Saved FBT Calibrations", (() =>
+            if (MelonHandler.Mods.Find(m => m.Info.Name == "UI Expansion Kit") != null)
             {
-                _savedCalibrations.Clear();
-                File.Delete($"{CalibrationsDirectory}{CalibrationsFile}");
-                MelonLogger.Log("Cleared Saved Calibrations");
+                MelonLogger.Log("Adding UIX Button to clear saved calibrations...");
+                ExpansionKitApi.GetExpandedMenu(ExpandedMenu.AvatarMenu).AddSimpleButton("Clear Saved FBT Calibrations",
+                    () =>
+                    {
+                        _savedCalibrations.Clear();
+                        File.Delete($"{CalibrationsDirectory}{CalibrationsFile}");
+                        MelonLogger.Log("Cleared Saved Calibrations");
+                    });
             }
-            ));
 
             MelonLogger.Log("Done!");
         }
@@ -96,7 +99,6 @@ namespace FBT_Saver
                 LeftFoot = new KeyValuePair<Vector3, Quaternion>(__instance.leftFoot.localPosition, __instance.leftFoot.localRotation),
                 RightFoot = new KeyValuePair<Vector3, Quaternion>(__instance.rightFoot.localPosition, __instance.rightFoot.localRotation),
             };
-
 
             try
             {
