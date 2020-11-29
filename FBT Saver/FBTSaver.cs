@@ -7,6 +7,7 @@ using Harmony;
 using MelonLoader;
 using Newtonsoft.Json;
 using UnityEngine;
+using UIExpansionKit.API;
 
 namespace FBT_Saver
 {
@@ -73,6 +74,16 @@ namespace FBT_Saver
                         break;
                 }
             }
+
+            MelonLogger.Log("Adding UIX Button...");
+            ExpansionKitApi.RegisterSimpleMenuButton(ExpandedMenu.AvatarMenu, "Clear Saved FBT Calibrations", (() =>
+            {
+                _savedCalibrations.Clear();
+                File.Delete($"{CalibrationsDirectory}{CalibrationsFile}");
+                MelonLogger.Log("Cleared Saved Calibrations");
+            }
+            ));
+
             MelonLogger.Log("Done!");
         }
 
