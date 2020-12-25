@@ -17,7 +17,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.2";
+        public const string Version = "1.1.3";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
