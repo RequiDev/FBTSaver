@@ -6,6 +6,7 @@ using System.Reflection;
 using Harmony;
 using MelonLoader;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using UnityEngine;
 using UIExpansionKit.API;
 
@@ -104,7 +105,8 @@ namespace FBT_Saver
             {
                 File.WriteAllText($"{CalibrationsDirectory}{CalibrationsFile}", JsonConvert.SerializeObject(_savedCalibrations, Formatting.Indented, new JsonSerializerSettings
                 {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    ContractResolver = new DynamicContractResolver("normalized")
                 }));
             }
             catch(Exception e)
@@ -139,6 +141,27 @@ namespace FBT_Saver
 
             __result = true;
             return false;
+        }
+
+        private class DynamicContractResolver : DefaultContractResolver
+        {
+            private readonly string _propertyNameToExclude;
+
+            public DynamicContractResolver(string propertyNameToExclude)
+            {
+                _propertyNameToExclude = propertyNameToExclude;
+            }
+
+            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+            {
+                var properties = base.CreateProperties(type, memberSerialization);
+
+                // only serializer properties that are not named after the specified property.
+                properties =
+                    properties.Where(p => string.Compare(p.PropertyName, _propertyNameToExclude, StringComparison.OrdinalIgnoreCase) != 0).ToList();
+
+                return properties;
+            }
         }
     }
 }
