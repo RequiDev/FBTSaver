@@ -17,7 +17,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.3";
+        public const string Version = "1.1.4";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -96,9 +96,9 @@ namespace FBT_Saver
             var avatarId = VRCPlayer.field_Internal_Static_VRCPlayer_0.prop_VRCAvatarManager_0.field_Private_ApiAvatar_0.id;
             _savedCalibrations[avatarId] = new FbtCalibration
             {
-                Hip = new KeyValuePair<Vector3, Quaternion>(__instance.hip.localPosition, __instance.hip.localRotation),
-                LeftFoot = new KeyValuePair<Vector3, Quaternion>(__instance.leftFoot.localPosition, __instance.leftFoot.localRotation),
-                RightFoot = new KeyValuePair<Vector3, Quaternion>(__instance.rightFoot.localPosition, __instance.rightFoot.localRotation),
+                LeftFoot = new KeyValuePair<Vector3, Quaternion>(__instance.field_Public_Transform_10.localPosition, __instance.field_Public_Transform_10.localRotation),
+                RightFoot = new KeyValuePair<Vector3, Quaternion>(__instance.field_Public_Transform_11.localPosition, __instance.field_Public_Transform_11.localRotation),
+                Hip = new KeyValuePair<Vector3, Quaternion>(__instance.field_Public_Transform_12.localPosition, __instance.field_Public_Transform_12.localRotation),
             };
 
             try
@@ -129,14 +129,14 @@ namespace FBT_Saver
             if (_savedCalibrations.ContainsKey(avatarId))
             {
                 var savedCalib = _savedCalibrations[avatarId];
-                __instance.hip.localPosition = savedCalib.Hip.Key;
-                __instance.hip.localRotation = savedCalib.Hip.Value;
+                __instance.field_Public_Transform_10.localPosition = savedCalib.LeftFoot.Key;
+                __instance.field_Public_Transform_10.localRotation = savedCalib.LeftFoot.Value;
 
-                __instance.leftFoot.localPosition = savedCalib.LeftFoot.Key;
-                __instance.leftFoot.localRotation = savedCalib.LeftFoot.Value;
+                __instance.field_Public_Transform_11.localPosition = savedCalib.RightFoot.Key;
+                __instance.field_Public_Transform_11.localRotation = savedCalib.RightFoot.Value;
 
-                __instance.rightFoot.localPosition = savedCalib.RightFoot.Key;
-                __instance.rightFoot.localRotation = savedCalib.RightFoot.Value;
+                __instance.field_Public_Transform_12.localPosition = savedCalib.Hip.Key;
+                __instance.field_Public_Transform_12.localRotation = savedCalib.Hip.Value;
             }
 
             __result = true;
