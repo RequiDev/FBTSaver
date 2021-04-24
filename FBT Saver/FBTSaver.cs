@@ -60,8 +60,7 @@ namespace FBT_Saver
             }
 
             MelonLogger.Log("Patching IsCalibratedForAvatar...");
-
-            // Yoinked from emm. Thanks <3
+            
             var methods = typeof(VRCTrackingSteam).GetMethods();
             foreach (var methodInfo in methods)
             {
@@ -93,7 +92,7 @@ namespace FBT_Saver
 
         private static void PerformCalibration(ref VRCTrackingSteam __instance, Animator __0, bool __1, bool __2)
         {
-            var avatarId = VRCPlayer.field_Internal_Static_VRCPlayer_0.prop_VRCAvatarManager_0.field_Private_ApiAvatar_0.id;
+            var avatarId = VRCPlayer.field_Internal_Static_VRCPlayer_0.field_Private_Player_0.prop_ApiAvatar_0.id;
             _savedCalibrations[avatarId] = new FbtCalibration
             {
                 LeftFoot = new KeyValuePair<Vector3, Quaternion>(__instance.field_Public_Transform_10.localPosition, __instance.field_Public_Transform_10.localRotation),
