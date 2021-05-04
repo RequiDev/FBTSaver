@@ -17,7 +17,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.4";
+        public const string Version = "1.1.5";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -92,7 +92,7 @@ namespace FBT_Saver
 
         private static void PerformCalibration(ref VRCTrackingSteam __instance, Animator __0, bool __1, bool __2)
         {
-            var avatarId = VRCPlayer.field_Internal_Static_VRCPlayer_0.field_Private_Player_0.prop_ApiAvatar_0.id;
+            var avatarId = VRCPlayer.field_Internal_Static_VRCPlayer_0._player.prop_ApiAvatar_0.id;
             _savedCalibrations[avatarId] = new FbtCalibration
             {
                 LeftFoot = new KeyValuePair<Vector3, Quaternion>(__instance.field_Public_Transform_10.localPosition, __instance.field_Public_Transform_10.localRotation),
