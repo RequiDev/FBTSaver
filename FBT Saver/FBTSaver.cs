@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using MelonLoader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -17,7 +17,7 @@ namespace FBT_Saver
         public const string Name = "FBT Saver";
         public const string Author = "Requi";
         public const string Company = "RequiDev";
-        public const string Version = "1.1.6";
+        public const string Version = "1.1.7";
         public const string DownloadLink = "https://github.com/RequiDev/FBTSaver";
     }
 
@@ -31,13 +31,14 @@ namespace FBT_Saver
         }
 
         private static Dictionary<string, FbtCalibration> _savedCalibrations;
+        private static MelonPreferences_Entry<bool> _saveCalibrations;
 
         private const string CalibrationsDirectory = "UserData/FBTSaver/";
         private const string CalibrationsFile = "calibrations.json";
 
         public override void OnApplicationStart()
         {
-            var instance = HarmonyInstance.Create("FBTSaver");
+            var instance = new HarmonyLib.Harmony("FBTSaver");
 
             Directory.CreateDirectory(CalibrationsDirectory);
 
@@ -47,11 +48,11 @@ namespace FBT_Saver
                     JsonConvert.DeserializeObject<Dictionary<string, FbtCalibration>>(
                         File.ReadAllText($"{CalibrationsDirectory}{CalibrationsFile}"));
 
-                MelonLogger.Log($"Loaded {_savedCalibrations.Count} calibrations from disk.");
+                MelonLogger.Msg($"Loaded {_savedCalibrations.Count} calibrations from disk.");
             }
             else
             {
-                MelonLogger.Log($"No saved calibrations found. Creating new.");
+                MelonLogger.Msg($"No saved calibrations found. Creating new.");
                 _savedCalibrations = new Dictionary<string, FbtCalibration>(128);
                 File.WriteAllText($"{CalibrationsDirectory}{CalibrationsFile}", JsonConvert.SerializeObject(_savedCalibrations, Formatting.Indented, new JsonSerializerSettings
                 {
@@ -59,7 +60,7 @@ namespace FBT_Saver
                 }));
             }
 
-            MelonLogger.Log("Patching IsCalibratedForAvatar...");
+            MelonLogger.Msg("Patching IsCalibratedForAvatar...");
             
             var methods = typeof(VRCTrackingSteam).GetMethods();
             foreach (var methodInfo in methods)
@@ -75,19 +76,21 @@ namespace FBT_Saver
                 }
             }
 
+            _saveCalibrations = MelonPreferences.CreateCategory("FBT Saver").CreateEntry("SaveCalibrations", true, "Save Calibrations", "Save your calibrations to disk and re-use them on each avatar.");
+
             if (MelonHandler.Mods.Find(m => m.Info.Name == "UI Expansion Kit") != null)
             {
-                MelonLogger.Log("Adding UIX Button to clear saved calibrations...");
-                ExpansionKitApi.GetExpandedMenu(ExpandedMenu.AvatarMenu).AddSimpleButton("Clear Saved FBT Calibrations",
+                MelonLogger.Msg("Adding UIX Button to clear saved calibrations...");
+                ExpansionKitApi.GetExpandedMenu(ExpandedMenu.AvatarMenu).AddSimpleButton("Clear saved FBT calibrations",
                     () =>
                     {
                         _savedCalibrations.Clear();
                         File.Delete($"{CalibrationsDirectory}{CalibrationsFile}");
-                        MelonLogger.Log("Cleared Saved Calibrations");
+                        MelonLogger.Msg("Cleared saved calibrations");
                     });
             }
 
-            MelonLogger.Log("Done!");
+            MelonLogger.Msg("Done!");
         }
 
         private static void PerformCalibration(ref VRCTrackingSteam __instance, Animator __0, bool __1, bool __2)
@@ -111,7 +114,7 @@ namespace FBT_Saver
             catch(Exception e)
             {
                 File.WriteAllText($"{CalibrationsDirectory}error.log", e.Message);
-                MelonLogger.LogError(
+                MelonLogger.Error(
                     $"Could not save current calibration to file! Created error.log in /UserData/FTBSaver. Please create an issue on GitHub or message Requi in the VRChat Modding Group Discord with that file.");
             }
         }
@@ -125,7 +128,7 @@ namespace FBT_Saver
             }
 
             var avatarId = __0;
-            if (_savedCalibrations.ContainsKey(avatarId))
+            if (_saveCalibrations.Value && _savedCalibrations.ContainsKey(avatarId))
             {
                 var savedCalib = _savedCalibrations[avatarId];
                 __instance.field_Public_Transform_10.localPosition = savedCalib.LeftFoot.Key;
